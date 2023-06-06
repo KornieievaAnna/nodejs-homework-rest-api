@@ -2,9 +2,9 @@ const express = require("express");
 
 const router = express.Router();
 
-const contactController = require("../../controllers/contacts-controllers");
+const contactController = require("../../controllers/contacts");
 
-const {schemas} = require("../../models/contact");
+const { schemas } = require("../../models/contact");
 
 const { validateBody, isValidId } = require("../../middlewares");
 
@@ -19,7 +19,8 @@ router.post(
 );
 
 router.put(
-  "/:id", isValidId, 
+  "/:id",
+  isValidId,
   validateBody(schemas.contactAddScheme),
   contactController.updateContact
 );
