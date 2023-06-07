@@ -11,8 +11,8 @@ const { ctrlWrapper } = require("../../decorators");
 const { SECRET_KEY } = process.env;
 
 const login = async (req, res) => {
-    const { email, password } = req.body;
-    
+  const { email, password } = req.body;
+
   const user = await User.findOne({ email });
 
   if (!user) {
@@ -25,8 +25,10 @@ const login = async (req, res) => {
     throw HttpError(401, "Email or password invalid");
   }
 
+  const { _id: id } = user;
+
   const payload = {
-    id: user._id,
+    id,
   };
 
   const token = jwt.sign(payload, SECRET_KEY, { expiresIn: "23h" });
