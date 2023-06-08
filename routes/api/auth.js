@@ -19,7 +19,7 @@ router.get("/current", authenticate, ctrl.getCurrent);
 router.post("/logout", authenticate, ctrl.logout);
 
 router.patch(
-  "/user",
+  "/:id",
   authenticate,
   validateSubscription(schemas.updateSubscriptionSchema),
   ctrl.updateSubscription

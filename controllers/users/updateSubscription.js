@@ -1,7 +1,4 @@
 const { User } = require("../../models/user");
-
-const { ctrlWrapper } = require("../../decorators");
-
 const updateSubscription = async (req, res) => {
   const { id } = req.params;
 
@@ -10,4 +7,4 @@ const updateSubscription = async (req, res) => {
   res.json(result);
 };
 
-module.exports = { updateSubscription: ctrlWrapper(updateSubscription) };
+module.exports = updateSubscription;

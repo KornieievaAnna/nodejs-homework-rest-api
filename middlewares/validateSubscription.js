@@ -1,6 +1,6 @@
 const { HttpError } = require("../helpers");
 
-const validateSubscription = (schema) => {
+const validateSubscription = schema => {
   const func = (req, res, next) => {
     const { error } = schema.validate(req.body);
     if (error) {
@@ -8,7 +8,7 @@ const validateSubscription = (schema) => {
     }
     next();
   };
-  return func;
+  return (func);
 };
 
 module.exports = validateSubscription;
