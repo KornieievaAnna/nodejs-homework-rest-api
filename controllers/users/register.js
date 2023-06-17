@@ -1,18 +1,16 @@
 const bcrypt = require("bcrypt");
 
+const { nanoid } = require("nanoid");
+
 const { User } = require("../../models/user");
 
-const { HttpError } = require("../../helpers");
+const { HttpError, sendEmail } = require("../../helpers");
 
 const { ctrlWrapper } = require("../../decorators");
 
 const gravatar = require("gravatar");
 
-// const fs = require("fs/promises");
-
-// const path = require("path");
-
-// const contactPath = path.join(__dirname, "../", "public", "avatars"); к апдейту аватара
+const { PROJECT_URL } = process.env;
 
 const register = async (req, res) => {
   const { email, password } = req.body;
@@ -23,6 +21,8 @@ const register = async (req, res) => {
   }
 
   const hashPassword = await bcrypt.hash(password, 10);
+  const verificationToken = nanoid();
+
   const avatarURL = gravatar.url(email, {
     s: "80", // размер изображения (пиксели)
     r: "g", // рейтинг изображения
@@ -32,7 +32,28 @@ const register = async (req, res) => {
     ...req.body,
     password: hashPassword,
     avatarURL,
+    verificationToken,
   });
+
+  const verifyEmail = {
+    to: email,
+    subject: "Verify email",
+    html: `<a target=_blank href="${PROJECT_URL}/api/auth/verify/${verificationToken}">Click to verify your email</a>`,
+  };
+
+  await sendEmail(verifyEmail);
+
+  // const sendEmail = {
+  //   from: UKR_NET_EMAIL,
+  //   to: email,
+  //   subject: "Verify your email",
+  //   html: '<h3>Dear User, welcome to HELL!</h3><br />May the delivery force be with you!',
+  // };
+
+  // await transport
+  //   .sendMail(sendEmail)
+  //   .then(() => console.log("Email send success"))
+  //   .catch((error) => console.log(error.message));
 
   res.status(201).json({
     email: newUser.email,
@@ -44,10 +65,3 @@ const register = async (req, res) => {
 module.exports = {
   register: ctrlWrapper(register),
 };
-
-// // console.log(req.body);
-// // console.log(req.file);
-// const { path: oldPath, filename } = req.file;
-// const newPath = path.join(contactPath, filename);
-// await fs.rename(oldPath, newPath);
-// const anatar = path.join("public", "contacts", filename);

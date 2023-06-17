@@ -15,7 +15,7 @@ const login = async (req, res) => {
 
   const user = await User.findOne({ email });
 
-  if (!user) {
+  if (!user || !user.verify) {
     throw HttpError(401, "Email or password invalid");
   }
 
